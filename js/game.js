@@ -39,7 +39,9 @@ var _lang = {
  */
 (function(){
     //绑定界面元素
-    var dom = {},
+    var dom = {
+        
+    },
         game = {
             score: 0,
             right_answer: 0, //正确答案
@@ -74,6 +76,12 @@ var _lang = {
             initEvent: function(){
                 var eventName = "ontouchstart" in document.documentElement ? "touch" : "click",
                     mathGame = this;
+
+                $(window).resize(function(){
+                    mathGame.randerUI();
+                });
+
+
             }
 
 
