@@ -23,9 +23,9 @@ var _lang = {
         lang: 'zh',
         initTime: 15,
         addTime: 1,
+        addScore: 20,
         sumMax: 100,
         multiMax: 1000
-
     },
 
     //游戏数据
@@ -201,7 +201,7 @@ var _lang = {
 
                 dom.dialog.hide();
                 mathfactory.init();
-                this.timer || (this.timer = setInterval(this.tick,1000));
+                this.timer || (this.timer = setInterval(this.tick.call(_this), 1000));
             },
 
             tick: function(){
@@ -221,10 +221,11 @@ var _lang = {
                 _this.time = _config[initTime];
             },
             nextLv: function(){
-                this.time += this.config.addTime; 
-                 b.time.text(parseInt(this.time)); 
+                this.time += this.config.addTime;
+                this.score += this.config.addScore; 
+                dom.time.text(parseInt(this.time)); 
 
-                 this.start();
+                this.start();
             },
             gameOver: function(){
 

@@ -31,9 +31,9 @@
             //主游戏页面渲染
             render: function(){
                 setTimeout(function(){
-                    query.loading.hide();
+                    //query.loading.hide();
                     query.index.show();
-                },800);
+                },10);
             },
 
             initEvent: function(){
