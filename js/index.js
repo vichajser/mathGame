@@ -7,7 +7,8 @@
 (function(){
     //绑定界面元素
     var query = {
-            index: $(""),
+            index: $("#main-game"),
+            loading: $("#explain-game"),
             play: $("")
             //
         },
