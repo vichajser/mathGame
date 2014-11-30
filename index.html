@@ -8,7 +8,7 @@
 	<link rel="stylesheet" type="text/css" href="css/index.css">
 </head>
 <body>
-	<div id="main-game">
+	<div id="main-game" style="display: none">
 		<div class="time-zone">
 			<img src="img/time.png">
 			<span class="time">15</span>
@@ -21,6 +21,22 @@
 		</div>
 		<div class="answer">
 			<input type="text" placeholder="填写答案">
+		</div>
+	</div>
+	<div id="result">
+		<div class="share">
+			<img src="img/bg_share.png" alt="">
+		</div>
+		<div class="score">
+			<div class="fen">
+				score:&nbsp&nbsp<span>61</span>
+			</div>
+			<div class="defeat">
+				你击败了全国 <span>61%</span> 的人~
+			</div>
+		</div>
+		<div class="replay">
+			<button class="btn">再玩儿一次</button>
 		</div>
 	</div>
 </body>
