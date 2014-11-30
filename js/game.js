@@ -21,7 +21,10 @@ var _lang = {
     //游戏配置
     _config = {
         lang: 'zh',
-        initTime: 15
+        initTime: 15,
+        addTime: 1,
+        sumMax: 100,
+        multiMax: 1000
 
     },
 
@@ -31,6 +34,90 @@ var _lang = {
         timeLineLink: "",
         tTitle: _lang[_config.lang].title,
         tContent: _lang[_config.lang].desc
+    },
+
+    mathFactory = function(){
+        this.init();
+    };
+
+    mathFactory.prototype.init = function(){
+        var _this = this,
+            num = parseInt(Math.random()*1) || 0;
+
+        this.factory(num);
+    };
+
+    mathFactory.prototype.randomNum = (minNum,maxNum){
+        return parseInt(minNum + Math.random() * (maxNum - minNum));
+    };
+
+    mathFactory.prototype.operator = (num, a, b){
+        var result = {},
+            operatorFactory = [
+                function add(a,b){
+                    result.a = a;
+                    result.b = b;
+                    result.rightAnswer = parseInt(a) + parseInt(b);
+                    result.operator = "+";
+                },
+                function sub(a, b){
+                    result.a = a;
+                    result.b = b;
+                    result.rightAnswer = parseInt(a) - parseInt(b);
+                    result.operator = "-";
+                },
+                function mul(a, b){
+                    result.a = a;
+                    result.b = b;
+                    result.rightAnswer = parseInt(a) * parseInt(b);
+                    result.operator = "×";
+                },
+                function sub(a, b){
+                    result.b = a;
+                    result.rightAnswer = b;
+
+                    result.a = parseInt(a) * parseInt(b);
+                    result.operator = "÷";
+                }
+            ];
+
+        
+        if(num == 0){
+            operatorFactory[2 + parseInt(Math.random()*2)]();
+        }else{
+            operatorFactory[parseInt(Math.random()*2)]();
+        }
+
+        return result
+    };
+
+
+    mathFactory.prototype.factory = function(num){
+        var _this = this,
+            result = {};
+
+        switch(num){
+            case 0 :
+                var a = _this.randomNum(0, _config.sumMax),
+                    b = _this.randomNum(0, _config.sumMax);
+
+                    result = _this.operator(num, a, b);
+                    break;
+            case 1 :
+                var a = _this.randomNum(100, _config.sumMax),
+                    b = _this.randomNum(100, _config.sumMax);
+
+                    result = _this.operator(num, a, b);
+                    break;
+            default: break;
+        }
+
+        return {
+            a: a,
+            b: b,
+            operator: result.operator,
+            rightAnswer: result.rightAnswer
+        };
     };
 
 /**
@@ -40,8 +127,11 @@ var _lang = {
 (function(){
     //绑定界面元素
     var dom = {
-        
+        input_val: $(),
+        start: $(),
+        time: $()
     },
+        mathfactory = new mathFactory(),
         game = {
             score: 0,
             right_answer: 0, //正确答案
@@ -81,10 +171,63 @@ var _lang = {
                     mathGame.randerUI();
                 });
 
+                dom.input_val.bind('input propertychange',function(){
+                    var value = dom.input_val.data();
+
+                    if(right_answer == value){
+                        // dom.input_val.css('border','1px solid blue');
+                        game.nextLv().call(mathGame);
+                    }else{
+                        // dom.input_val.css('border','1px solid red');
+                    }
+                });
+
+                dom.btn_resume.on(eventName,function(){
+                    game.resume.call(this);
+                });
+
+                dom.start.on(eventName,function(){
+                    mathGame.right_answer = 0;
+                    mathGame.score = 0;
+                    
+                    mathGame.reset();
+                    mathGame.start();
+                });
+
+            },
+
+            start: function(){
+                var _this = this;
+
+                dom.dialog.hide();
+                mathfactory.init();
+                this.timer || (this.timer = setInterval(this.tick,1000));
+            },
+
+            tick: function(){
+                var _this = this;
+                
+                _this.time --;
+                if(_this.time < 0){
+                    _this.gameOver();
+                }else{
+                    dom.time.text(parseInt(this.time));
+                }
+            },
+
+            reset: function(){
+                var _this = this;
+                
+                _this.time = _config[initTime];
+            },
+            nextLv: function(){
+                this.time += this.config.addTime; 
+                 b.time.text(parseInt(this.time)); 
+
+                 this.start();
+            },
+            gameOver: function(){
 
             }
-
-
-
         }
 })()
