@@ -99,8 +99,8 @@ var _lang = {
 
         switch(num){
             case 0 :
-                    a = _this.randomNum(0, _config.multiMax),
-                    b = _this.randomNum(0, _config.multiMax);
+                    a = _this.randomNum(1, _config.multiMax),
+                    b = _this.randomNum(1, _config.multiMax);
 
                     result = _this.operator(num, a, b);
                     break;
@@ -190,7 +190,7 @@ var _lang = {
                     }
                 });
 
-                dom.re_start.on(eventName,function(){
+                dom.re_start.bind(eventName, function(){
                     _this.right_answer = 0;
                     _this.lastScore = 0;
                     _this.timer = 0;

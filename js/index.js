@@ -56,7 +56,7 @@
 
                 document.addEventListener('WeixinJSBridgeReady', function(){
                     if(WeixinJSBridge){
-                        WeixinJSBridge.on("menu:share:appmessage", function(){
+                        WeixinJSBridge.bind("menu:share:appmessage", function(){
                             var a = Game.lastScore > 0 ? content.share_txt1 + Game.lastScore + content.share_txt2 + Game.lastGamePercent + content.share_txt3 + content.share_text4 : shareData.tTitle;
 
                             WeixinJSBridge.invoke('sendAppMessage', {
@@ -67,7 +67,7 @@
                             },function(){});
                         });
 
-                        WeixinJSBridge.on("menu:share:timeline", function(){
+                        WeixinJSBridge.bind("menu:share:timeline", function(){
                             var a = Game.lastScore > 0 ? content.share_txt1 + Game.lastScore + content.share_txt2 + Game.lastGamePercent + content.share_txt3  + content.share_text4 : shareData.tTitle;
 
                             WeixinJSBridge.invoke('shareTimeline', {
