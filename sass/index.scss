@@ -5,6 +5,67 @@ body{
 	width: 100%;
 	background: url('../img/dark_wood.png') repeat;
 }
+
+#explain-game{
+	position:relative;
+	.title{
+		font-size: 2.0625rem;
+		color: #fff;
+		text-align:center;
+		margin-top: 60px;
+		span{
+			-webkit-animation: start 1.5s 2;
+			animation: start 1.5s 2;
+			color: #DB336C;
+			font-size: 2.5rem;
+			display:inline-block;
+		} 
+	}
+	.introduce{
+		padding: 0 5%;
+		position:relative;
+		margin-top: 82px;
+		div , ul {
+			color:#fff;
+		}
+		.rule{
+			font-size: 1.5rem;
+			margin-bottom:5px;
+		}
+		ul li{
+			margin-top: 5px;
+			line-height: 21px;
+		}
+	}
+	.begin{
+		position: relative;
+		width: 100%;
+		margin-top:74px;
+		text-align:center;
+		.btn{
+			background-color:#D02D2D;
+			border-color: transparent;
+			padding : 6px 12px;
+			font-size: 1rem;
+			font-weight: 400;
+			text-align: center;
+			@include border-radius(4px);
+			color: #fff;
+			margin: 0 auto; 
+			width:46%;
+			height: 43px;
+		}
+	}	
+}
+
+@-webkit-keyframes start{
+	0%{-webkit-transform: rotateX(0deg);transform: rotateX(0deg);}
+	25%{-webkit-transform: rotateX(90deg);transform: rotateX(90deg);}
+	50%{-webkit-transform: rotateX(180deg);transform: rotateX(180deg);}
+	75%{-webkit-transform: rotateX(270deg);transform: rotateX(270deg);}
+	100%{-webkit-transform: rotateX(360deg);transform: rotateX(360deg);}
+}
+
 #main-game{
 	margin:5px;
 }

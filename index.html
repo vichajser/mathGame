@@ -7,9 +7,26 @@
 	<script src="lib/jquery.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="css/global.css">
 	<link rel="stylesheet" type="text/css" href="css/index.css">
+	<style type="text/css">
+	#main-game , #result{
+		display: none;
+	}
+	</style>
 </head>
 <body>
 	<div id="explain-game">
+		<div class="title">看谁<span>算</span>的快</div>
+		<div class="introduce">
+			<div class="rule">游戏规则:</div>
+			<ul>
+				<li>1.将计算结果填入输入框中，计时从你填对第一道题开始</li>
+				<li>2.你一开始有15秒钟的时间，每答对一道题，时间会增加一秒</li>
+				<li>3.当时间为0时，游戏结束~ 让我们开始吧！</li>
+			</ul>
+		</div>
+		<div class="begin">
+			<button class="btn">开始游戏</button>
+		</div>
 	</div>
 	<div id="main-game">
 		<div class="time-zone">
