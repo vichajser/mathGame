@@ -4,12 +4,13 @@
  * 游戏初始化
  * @return {[type]} [description]
  */
-(function(){
+
+!function(){
     //绑定界面元素
     var query = {
             index: $("#main-game"),
             loading: $("#explain-game"),
-            play: $("")
+            play: $("#play")
             //
         },
         //判断手机型号
@@ -32,8 +33,8 @@
             //主游戏页面渲染
             render: function(){
                 setTimeout(function(){
-                    //query.loading.hide();
-                    query.index.show();
+                    query.loading.show();
+                    // query.index.show();
                 },10);
             },
 
@@ -43,19 +44,20 @@
 
                 query.play.on(clickEvent, function(){
                     // var type = $(this).data('type')
-                    Game.init(query.room, myapp);
+                    query.loading.hide();
+                    Game.init(query.index, mathApp);
                 });
 
                 this.weixinEvent();
             },
 
             weixinEvent: function(){
-                var content = _lang[config.lang];
+                var content = _lang[_config.lang];
 
                 document.addEventListener('WeixinJSBridgeReady', function(){
                     if(WeixinJSBridge){
                         WeixinJSBridge.on("menu:share:appmessage", function(){
-                            var a = Game.lastScore > 0 ? content.share_txt1 + Game.lastScore + content.share_txt2 + Game.lastGamePercent + content.share_txt3 + Game.lastGameTxt + content.share_text4 : shareData.tTitle;
+                            var a = Game.lastScore > 0 ? content.share_txt1 + Game.lastScore + content.share_txt2 + Game.lastGamePercent + content.share_txt3 + content.share_text4 : shareData.tTitle;
 
                             WeixinJSBridge.invoke('sendAppMessage', {
                                 img_url: shareData.imgUrl,
@@ -66,7 +68,7 @@
                         });
 
                         WeixinJSBridge.on("menu:share:timeline", function(){
-                            var a = Game.lastScore > 0 ? content.share_txt1 + Game.lastScore + content.share_txt2 + Game.lastGamePercent + content.share_txt3 + Game.lastGameTxt + content.share_text4 : shareData.tTitle;
+                            var a = Game.lastScore > 0 ? content.share_txt1 + Game.lastScore + content.share_txt2 + Game.lastGamePercent + content.share_txt3  + content.share_text4 : shareData.tTitle;
 
                             WeixinJSBridge.invoke('shareTimeline', {
                                 img_url: shareData.imgUrl,
@@ -82,5 +84,4 @@
 
         app.init();
         window.API = {};
-
-})();
+}();

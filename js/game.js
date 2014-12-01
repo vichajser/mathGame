@@ -13,7 +13,7 @@ var _lang = {
             loading: "加载中...",
             share_txt1: "我怒砍",
             share_txt2: "分，击败了",
-            share_txt3: "%的人,经鉴定我的小学数学老师",
+            share_txt3: "%的人,经鉴定我的小学数学是体育老师教的",
             share_text4: ",不服来战！",
             desc: "看你能算多少。分享朋友圈,选择你身边那些被体育老师教过的数学的汉子"
         }
@@ -24,8 +24,9 @@ var _lang = {
         initTime: 15,
         addTime: 1,
         addScore: 20,
-        sumMax: 100,
-        multiMax: 1000
+        sumMax: 500,
+        multiMax: 20,
+        level: [10, 20, 30, 40, 50, 60, 70, 80, 90, 99]
     },
 
     //游戏数据
@@ -37,21 +38,21 @@ var _lang = {
     },
 
     mathFactory = function(){
-        this.init();
+        //
     };
 
     mathFactory.prototype.init = function(){
         var _this = this,
-            num = parseInt(Math.random()*1) || 0;
+            num = parseInt(Math.random()*2) || 0;
 
-        this.factory(num);
+        return _this.factory(num);
     };
 
-    mathFactory.prototype.randomNum = (minNum,maxNum){
+    mathFactory.prototype.randomNum = function(minNum,maxNum){
         return parseInt(minNum + Math.random() * (maxNum - minNum));
     };
 
-    mathFactory.prototype.operator = (num, a, b){
+    mathFactory.prototype.operator = function(num, a, b){
         var result = {},
             operatorFactory = [
                 function add(a,b){
@@ -83,28 +84,28 @@ var _lang = {
 
         
         if(num == 0){
-            operatorFactory[2 + parseInt(Math.random()*2)]();
+            operatorFactory[2 + parseInt(Math.random()*2)](a, b);
         }else{
-            operatorFactory[parseInt(Math.random()*2)]();
+            operatorFactory[parseInt(Math.random()*2)](a, b);
         }
 
-        return result
+        return result;
     };
-
 
     mathFactory.prototype.factory = function(num){
         var _this = this,
-            result = {};
+            result = {},
+            a,b;
 
         switch(num){
             case 0 :
-                var a = _this.randomNum(0, _config.sumMax),
-                    b = _this.randomNum(0, _config.sumMax);
+                    a = _this.randomNum(0, _config.multiMax),
+                    b = _this.randomNum(0, _config.multiMax);
 
                     result = _this.operator(num, a, b);
                     break;
             case 1 :
-                var a = _this.randomNum(100, _config.sumMax),
+                    a = _this.randomNum(100, _config.sumMax),
                     b = _this.randomNum(100, _config.sumMax);
 
                     result = _this.operator(num, a, b);
@@ -113,8 +114,8 @@ var _lang = {
         }
 
         return {
-            a: a,
-            b: b,
+            a: result.a,
+            b: result.b,
             operator: result.operator,
             rightAnswer: result.rightAnswer
         };
@@ -127,13 +128,19 @@ var _lang = {
 (function(){
     //绑定界面元素
     var dom = {
-        input_val: $(),
-        start: $(),
-        time: $()
+        input_val: $("#answer"),
+        re_start: $("#re_start"),
+        time: $("#time"),
+        math_container: $("#math-container"),
+        result: $("#result"),
+        score: $("#score"),
+        level: $("#level")
     },
         mathfactory = new mathFactory(),
         game = {
-            score: 0,
+            lastScore: 0,
+            timer: 0,
+            _tick: null,
             right_answer: 0, //正确答案
             init: function(el, parent){
                 this.api = API;
@@ -141,7 +148,6 @@ var _lang = {
                 this.lang = _lang[_config.lang];
                 this.el = el;
                 this.parent = parent;
-
                 this.reset();
                 this.randerUI();
                 this.inited || this.initEvent();
@@ -154,7 +160,7 @@ var _lang = {
             //渲染游戏主UI
             randerUI: function(){
                 var isLandScape = 90 == window.orientation || -90 == window.orientation;//判断用是否横屏
-                var width = isLandscape ? window.innerHeight : window.innerWidth;
+                var width = isLandScape ? window.innerHeight : window.innerWidth;
 
                 width -= 20;
                 width = Math.min(width,600);
@@ -165,70 +171,123 @@ var _lang = {
             //事件初始化
             initEvent: function(){
                 var eventName = "ontouchstart" in document.documentElement ? "touch" : "click",
-                    mathGame = this;
+                    _this = this;
 
                 $(window).resize(function(){
-                    mathGame.randerUI();
+                    _this.randerUI();
                 });
 
                 dom.input_val.bind('input propertychange',function(){
-                    var value = dom.input_val.data();
-
-                    if(right_answer == value){
-                        // dom.input_val.css('border','1px solid blue');
-                        game.nextLv().call(mathGame);
+                    var value = parseInt(dom.input_val.val());
+            
+                    if(game.right_answer == value){
+                        dom.input_val.css('border','1px solid blue');
+            
+                        _this.timer ++ ;
+                        game.nextLv();
                     }else{
-                        // dom.input_val.css('border','1px solid red');
+                        dom.input_val.css('border','1px solid red');
                     }
                 });
 
-                dom.btn_resume.on(eventName,function(){
-                    game.resume.call(this);
-                });
-
-                dom.start.on(eventName,function(){
-                    mathGame.right_answer = 0;
-                    mathGame.score = 0;
+                dom.re_start.on(eventName,function(){
+                    _this.right_answer = 0;
+                    _this.lastScore = 0;
+                    _this.timer = 0;
                     
-                    mathGame.reset();
-                    mathGame.start();
+                    dom.result.hide();
+                    _this.reset();
+                    _this.randerUI();
+                    _this.start();
                 });
 
+            },
+
+            randerNum: function(obj){
+                dom.math_container.text(obj.a + obj.operator + obj.b);
             },
 
             start: function(){
-                var _this = this;
+                var _this = this,
+                    result = {};
+                // dom.dialog.hide();
+                result = mathfactory.init();
 
-                dom.dialog.hide();
-                mathfactory.init();
-                this.timer || (this.timer = setInterval(this.tick.call(_this), 1000));
+                _this.randerNum(result);
+                game.right_answer = result.rightAnswer;
+
+                if(_this.timer == 1){
+                    _this._tick = setInterval(this.tick, 1000);
+                }
             },
 
             tick: function(){
-                var _this = this;
-                
+                var _this = game;
                 _this.time --;
-                if(_this.time < 0){
+            
+                if(_this.time < 10 && _this.time >= 0){
+                    dom.time.text("0" + parseInt(_this.time));
+                }else if(_this.time < 0){
                     _this.gameOver();
                 }else{
-                    dom.time.text(parseInt(this.time));
+                    dom.time.text(parseInt(_this.time));
                 }
             },
 
             reset: function(){
                 var _this = this;
                 
-                _this.time = _config[initTime];
+                _this.time = _config["initTime"];
+                dom.time.text(parseInt(_this.time))
             },
             nextLv: function(){
                 this.time += this.config.addTime;
-                this.score += this.config.addScore; 
-                dom.time.text(parseInt(this.time)); 
+                this.lastScore += this.config.addScore; 
+
+                if(this.time < 10 && this.time >= 0){
+                    dom.time.text("0" + parseInt(this.time));
+                }else{
+                    dom.time.text(parseInt(this.time));
+                }
+                
+                dom.input_val.val("");
 
                 this.start();
             },
             gameOver: function(){
+                var _this = this,
+                    num = _this.lastScore/20,
+                    level = dom.level;
 
+                _this.el.hide();
+                dom.result.show();
+                clearInterval(_this._tick);
+
+                dom.score.text(_this.lastScore);
+
+
+                if(num > 40){
+                    level.text(_config.level[9]);
+                }else if(num <= 40 && num > 35){
+                    level.text(_config.level[8]);
+                }else if(num <= 35 && num > 30){
+                    level.text(_config.level[7]);
+                }else if(num <= 30 && num > 25){
+                    level.text(_config.level[6]);
+                }else if(num <= 25 && num > 20){
+                    level.text(_config.level[5]);
+                }else if(num <= 20 && num > 15){
+                    level.text(_config.level[4]);
+                }else if(num <= 15 && num > 10){
+                    level.text(_config.level[3]);
+                }else if(num <= 10 && num > 5){
+                    level.text(_config.level[2]);
+                }else{
+                    level.text(_config.level[1]);
+                }
+
+                _this.lastGamePercent = level.text();
             }
-        }
+        };
+    window.Game = game;
 })()

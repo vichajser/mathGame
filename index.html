@@ -25,22 +25,21 @@
 			</ul>
 		</div>
 		<div class="begin">
-			<button class="btn">开始游戏</button>
+			<button class="btn" id="play">开始游戏</button>
 		</div>
 	</div>
 	<div id="main-game">
 		<div class="time-zone">
 			<img src="img/time.png">
-			<span class="time">15</span>
+			<span class="time" id="time"></span>
 			<span class="time-fix"> s left</span>
 		</div>
 		<div class="math">
-			<div class="math-container">
-				1x2
+			<div class="math-container" id="math-container">
 			</div>
 		</div>
 		<div class="answer">
-			<input type="text" placeholder="填写答案">
+			<input type="text" placeholder="填写答案" id="answer">
 		</div>
 	</div>
 	<div id="result">
@@ -49,15 +48,21 @@
 		</div>
 		<div class="score">
 			<div class="fen">
-				score:&nbsp&nbsp<span>61</span>
+				score:&nbsp&nbsp<span id="score">61</span>
 			</div>
 			<div class="defeat">
-				你击败了全国 <span>61%</span> 的人~
+				你击败了全国<span id="level"></span>%的人~
 			</div>
 		</div>
 		<div class="replay">
-			<button class="btn">再玩儿一次</button>
+			<button class="btn" id="re_start">再玩儿一次</button>
 		</div>
 	</div>
+
+	<script src="js/game.js"></script>
+    <script src="js/index.js"></script>
+    
+</body>
+</html>
 </body>
 </html>
